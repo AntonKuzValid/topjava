@@ -39,7 +39,11 @@ public class UserMealsUtil {
         return mealList
                 .stream()
                 .filter((s) -> TimeUtil.isBetween(s.getDateTime().toLocalTime(), startTime, endTime))
-                .map((s) -> new UserMealWithExceed(s.getDateTime(), s.getDescription(), s.getCalories(), dateWithColoriesMap.get(s.getDateTime().toLocalDate()) > caloriesPerDay))
+                .map((s) -> createUserMealWithExceed(s, dateWithColoriesMap.get(s.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
+    }
+
+    private static UserMealWithExceed createUserMealWithExceed(UserMeal userMeal,boolean isExceed){
+        return new UserMealWithExceed(userMeal.getDateTime(),userMeal.getDescription(),userMeal.getCalories(),isExceed);
     }
 }
