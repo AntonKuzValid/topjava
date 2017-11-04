@@ -1,5 +1,9 @@
 package ru.javawebinar.topjava;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @see <a href="http://topjava.herokuapp.com">Demo</a>
  * @see <a href="https://github.com/JavaOPs/topjava">Initial project</a>
