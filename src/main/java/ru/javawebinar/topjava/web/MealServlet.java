@@ -46,18 +46,20 @@ public class MealServlet extends HttpServlet {
             log.debug("remove meal");
             mealService.removeMeal(Integer.parseInt(mealIdForRemove));
         }
+
         log.debug("Get params");
         String date = req.getParameter("Date");
         String description = req.getParameter("Description");
         String calories = req.getParameter("Calories");
         String mealIdForEdit = req.getParameter("mealIdForEdit");
-        boolean isEdit = mealIdForEdit != null;
+        boolean isEdit = mealIdForEdit != null || (req.getParameter("isEdit") != null && req.getParameter("isEdit").equals("true"));
         Meal meal;
         if (date != null && description != null && calories != null) {
             meal = new Meal(LocalDateTime.parse(date), description, Integer.parseInt(calories));
+
             if (isEdit) {
                 log.debug("Edit meal");
-                meal.setId(Integer.parseInt(mealIdForEdit));
+                meal.setId(Integer.parseInt(req.getParameter("mealId")));
                 mealService.updateMeal(meal);
             } else {
                 log.debug("Add meal");
@@ -65,7 +67,10 @@ public class MealServlet extends HttpServlet {
             }
         }
         req.setAttribute("isEdit", isEdit);
-        if (mealIdForEdit != null && !mealIdForEdit.isEmpty()) req.setAttribute("mealId", mealIdForEdit);
+        if (mealIdForEdit != null && !mealIdForEdit.isEmpty()) {
+            req.setAttribute("mealId", mealIdForEdit);
+        }
+
         doGet(req, resp);
     }
 }

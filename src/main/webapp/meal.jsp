@@ -68,7 +68,8 @@
         <c:if test="${isEdit}">
             <tr>
                 <td colspan="2"><input type="submit" value="Edit">
-                    <input type="hidden" name="mealIdForEdit" value="${mealId}">
+                    <input type="hidden" name="mealId" value="${mealId}">
+                    <input type="hidden" name="isEdit" value="${true}">
                 </td>
             </tr>
         </c:if>
