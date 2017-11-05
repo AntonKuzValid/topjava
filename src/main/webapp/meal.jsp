@@ -15,12 +15,24 @@
 
         td {
             padding: 10px;
+        }
+        tr{
             background-color: lightgrey;
             border: solid darkgray;
         }
-
         table {
             border-collapse: collapse;
+        }
+
+        tr:hover{
+            background-color: lightgoldenrodyellow;
+        }
+        input:hover{
+            background-color: lightcyan;
+        }
+        input[type="submit"]{
+            padding: 8px;
+            width: 100px;
         }
     </style>
 </head>
