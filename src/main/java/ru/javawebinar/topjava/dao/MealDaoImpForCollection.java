@@ -4,14 +4,21 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class MealDaoImpForCollection implements MealDao {
 
+    public static void main(String[] arg){
+
+    }
+
     private static AtomicInteger atomicId = new AtomicInteger(0);
-    private static List<Meal> mealList = new CopyOnWriteArrayList();
+    private static Map<Integer,Meal> mealList = new ConcurrentHashMap<>();
 
     {
         add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
@@ -25,30 +32,32 @@ public class MealDaoImpForCollection implements MealDao {
     @Override
     public void add(Meal meal) {
         meal.setId(atomicId.incrementAndGet());
-        mealList.add(meal);
+        mealList.put(meal.getId(),meal);
     }
 
     @Override
-    public void updatel(Meal meal) {
-        mealList.set(mealList.indexOf(getById(meal.getId())), meal);
+    public void update(Meal meal) {
+        mealList.put(meal.getId(),meal);
     }
 
     @Override
-    public void removel(int id) {
-        mealList.remove(getById(id));
-    }
-
-    @Override
-    public Meal getById(int id) {
-        return mealList.stream()
-                .filter(m -> m.getId() == id)
-                .findFirst()
-                .get();
+    public void remove(int id) {
+        mealList.remove(id);
     }
 
     @Override
     public List<Meal> list() {
-        return mealList;
+        return new ArrayList<>(mealList.values());
+    }
+
+    @Override
+    public Meal getById(int id){
+        try {
+            return mealList.get(id);
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
     public static AtomicInteger getAtomicId() {

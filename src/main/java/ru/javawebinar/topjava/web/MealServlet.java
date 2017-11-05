@@ -22,17 +22,40 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
-    private MealService mealService = new MealServiceImp();
-
-    List<Meal> meals = mealService.list();
+    private MealService mealService = MealServiceImp.init();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to meals");
 
-        List<MealWithExceed> mealWithExceeds = MealsUtil.getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, 2000);
-        request.setAttribute("mealWithExceeds", mealWithExceeds);
+        String action = request.getParameter("action");
+        switch (action == null ? "info" : action) {
+            case "delete": {
+                log.debug("delete meal");
+                String mealIdForDelete = request.getParameter("mealIdForDelete");
+                mealService.remove(Integer.parseInt(mealIdForDelete));
 
+                log.debug("Forward to meal.jsp from GET");
+                request.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
+                //response.sendRedirect("meal.jsp");        - doesn't show mealList
+                break;
+            }
+            case "isupdate": {
+                log.debug("Put data for update");
+                String mealIdForUpdate = request.getParameter("mealIdForUpdate");
+                request.setAttribute("mealIdForUpdate", mealIdForUpdate);
+                request.setAttribute("isUpdate", true);
+                Meal meal = mealService.getById(Integer.parseInt(mealIdForUpdate));
+                request.setAttribute("updateDate", meal.getDate());
+                request.setAttribute("updateDesc", meal.getDescription());
+                request.setAttribute("updateCal", meal.getCalories());
+                break;
+            }
+            case "info":
+            default:
+        }
+        log.debug("Forward to meal.jsp from GET");
+        request.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
         request.getRequestDispatcher("meal.jsp").forward(request, response);
     }
 
@@ -40,36 +63,32 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("utf-8");
 
-        String mealIdForRemove = req.getParameter("mealIdForRemove");
-        if (mealIdForRemove != null) {
-            log.debug("remove meal");
-            mealService.remove(Integer.parseInt(mealIdForRemove));
-        }
-
         log.debug("Get params");
         String date = req.getParameter("Date");
         String description = req.getParameter("Description");
         String calories = req.getParameter("Calories");
-        String mealIdForEdit = req.getParameter("mealIdForEdit");
-        boolean isEdit = mealIdForEdit != null;
-        Meal meal;
-        if (date != null && description != null && calories != null) {
-            meal = new Meal(LocalDateTime.parse(date), description, Integer.parseInt(calories));
+        String mealIdForUpdate = req.getParameter("mealIdForUpdate");
+        Meal meal = new Meal(LocalDateTime.parse(date), description, Integer.parseInt(calories));
+        ;
 
-            if (isEdit  || (req.getParameter("isEdit") != null && req.getParameter("isEdit").equals("true"))) {
-                log.debug("Edit meal");
-                meal.setId(Integer.parseInt(req.getParameter("mealId")));
-                mealService.update(meal);
-            } else {
+        String action = req.getParameter("action");
+        switch (action == null ? "info" : action) {
+            case "add": {
                 log.debug("Add meal");
                 mealService.add(meal);
+                break;
             }
+            case "update": {
+                log.debug("Update meal");
+                meal.setId(Integer.parseInt(mealIdForUpdate));
+                mealService.update(meal);
+                break;
+            }
+            case "info":
+            default:
         }
-        req.setAttribute("isEdit", isEdit);
-        if (mealIdForEdit != null && !mealIdForEdit.isEmpty()) {
-            req.setAttribute("mealId", mealIdForEdit);
-        }
-
-        doGet(req, resp);
+        log.debug("Forward to meal.jsp from POST");
+        req.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
+        req.getRequestDispatcher("meal.jsp").forward(req, resp);
     }
 }

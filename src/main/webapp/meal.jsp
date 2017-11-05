@@ -30,7 +30,7 @@
             background-color: lightgoldenrodyellow;
         }
 
-        input:hover {
+        input[type="submit"]:hover {
             background-color: lightcyan;
         }
 
@@ -44,6 +44,17 @@
         input:focus {
             border-color: #0088cc;
         }
+
+        a {
+            padding: 8px;
+            width: 100px;
+            border-radius: 10px;
+            background-color: lightgrey;
+        }
+
+        a:hover {
+            background-color: lightcyan;
+        }
     </style>
 </head>
 
@@ -51,30 +62,25 @@
 <h3><a href="index.html">Home</a></h3>
 <h2>Meal list -</h2>
 <table>
-    <c:forEach items="${mealWithExceeds}" var="meal">
+    <c:forEach items="${mealList}" var="meal">
         <tr class=<c:out value="${meal.isExceed()==true? 'red' : 'green'}"/>>
             <td>${meal.id}</td>
             <td> ${meal.dateTime.toLocalDate()}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td>
-                <form action="/meal" method="post">
-                    <input type="hidden" name="mealIdForEdit" value="${meal.id}">
-                    <input type="submit" value="Edit"></form>
-            </td>
-            <td>
-                <form action="/meal" method="post">
-                    <input type="hidden" name="mealIdForRemove" value="${meal.id}">
-                    <input type="submit" value="Remove"></form>
-            </td>
+            <td><a href="meal?action=isupdate&mealIdForUpdate=${meal.id}">Update</a></td>
+            <td><a href="meal?action=delete&mealIdForDelete=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
 <br>
 
-<h2><c:out value="${isEdit? 'Edit meal':'Add meal'}"/></h2>
+<h2><c:out value="${isUpdate? 'Pease put data below to UPDATE meal':'ADD meal'}"/></h2>
 
-<form action="/meal" method="post">
+<form
+        <c:if test="${isUpdate==null}">action="meal?action=add"</c:if>
+        <c:if test="${isUpdate!=null}">action="meal?action=update"</c:if>
+        method="post">
     <table>
         <tr>
             <td><label for="date-field">Date</label></td>
@@ -82,21 +88,23 @@
         </tr>
         <tr>
             <td><label for="description-field">Description </label></td>
-            <td><input type="text" name="Description" id="description-field" required></td>
+            <td><input type="text" name="Description" id="description-field" required
+                       <c:if test="${isUpdate!=null}">placeholder="${updateDesc}"</c:if>></td>
         </tr>
         <tr>
             <td><label for="calories-field">Calories </label></td>
-            <td><input type="text" name="Calories" id="calories-field" required></td>
+            <td><input type="number" name="Calories" id="calories-field" required
+                       <c:if test="${isUpdate!=null}">placeholder="${updateCal}"</c:if>></td>
         </tr>
-        <c:if test="${isEdit}">
+        <c:if test="${isUpdate}">
             <tr>
-                <td colspan="2"><input type="submit" value="Edit">
-                    <input type="hidden" name="mealId" value="${mealId}">
-                    <input type="hidden" name="isEdit" value="${true}">
+                <td colspan="2"><input type="submit" value="Update">
+                    <input type="hidden" name="mealIdForUpdate" value="${mealIdForUpdate}">
+                    <input type="hidden" name="isUpdate" value="${isUpdate}">
                 </td>
             </tr>
         </c:if>
-        <c:if test="${!isEdit}">
+        <c:if test="${!isUpdate}">
             <tr>
                 <td colspan="2"><input type="submit" value="Add"></td>
             </tr>
