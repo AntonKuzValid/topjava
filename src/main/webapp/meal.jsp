@@ -44,17 +44,6 @@
         input:focus {
             border-color: #0088cc;
         }
-
-        a {
-            padding: 8px;
-            width: 100px;
-            border-radius: 10px;
-            background-color: lightgrey;
-        }
-
-        a:hover {
-            background-color: lightcyan;
-        }
     </style>
 </head>
 
@@ -68,8 +57,10 @@
             <td> ${meal.dateTime.toLocalDate()}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td><a href="meal?action=isupdate&mealIdForUpdate=${meal.id}">Update</a></td>
-            <td><a href="meal?action=delete&mealIdForDelete=${meal.id}">Delete</a></td>
+            <td><a href="meal?action=isupdate&mealIdForUpdate=${meal.id}" s><img src="Edit.png" width="50" height="50"
+                                                                                 alt="Update"/> </a></td>
+            <td><a href="meal?action=delete&mealIdForDelete=${meal.id}"><img src="Delete.png" width="30" height="30"
+                                                                             alt="Delete"/></a></td>
         </tr>
     </c:forEach>
 </table>
