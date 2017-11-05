@@ -34,6 +34,9 @@
             padding: 8px;
             width: 100px;
         }
+        input:focus{
+            border-color: #0088cc;
+        }
     </style>
 </head>
 <body>
