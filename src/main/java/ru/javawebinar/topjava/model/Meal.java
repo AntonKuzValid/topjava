@@ -1,12 +1,13 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.dao.MealDaoImpForCollection;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Meal {
-    private static AtomicInteger atomicId = new AtomicInteger(0);
 
     private int id;
 
@@ -20,7 +21,6 @@ public class Meal {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        id = atomicId.incrementAndGet();
     }
 
     public LocalDateTime getDateTime() {
@@ -45,10 +45,6 @@ public class Meal {
 
     public int getId() {
         return id;
-    }
-
-    public static AtomicInteger getAtomicId() {
-        return atomicId;
     }
 
     public void setId(int id) {

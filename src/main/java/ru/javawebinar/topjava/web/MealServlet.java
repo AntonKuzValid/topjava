@@ -18,14 +18,13 @@ import java.time.LocalTime;
 import java.util.List;
 
 
-import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
     private MealService mealService = new MealServiceImp();
 
-    List<Meal> meals = mealService.listMeals();
+    List<Meal> meals = mealService.list();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,7 +43,7 @@ public class MealServlet extends HttpServlet {
         String mealIdForRemove = req.getParameter("mealIdForRemove");
         if (mealIdForRemove != null) {
             log.debug("remove meal");
-            mealService.removeMeal(Integer.parseInt(mealIdForRemove));
+            mealService.remove(Integer.parseInt(mealIdForRemove));
         }
 
         log.debug("Get params");
@@ -60,10 +59,10 @@ public class MealServlet extends HttpServlet {
             if (isEdit  || (req.getParameter("isEdit") != null && req.getParameter("isEdit").equals("true"))) {
                 log.debug("Edit meal");
                 meal.setId(Integer.parseInt(req.getParameter("mealId")));
-                mealService.updateMeal(meal);
+                mealService.update(meal);
             } else {
                 log.debug("Add meal");
-                mealService.addMeal(meal);
+                mealService.add(meal);
             }
         }
         req.setAttribute("isEdit", isEdit);

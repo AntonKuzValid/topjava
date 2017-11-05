@@ -10,27 +10,27 @@ public class MealServiceImp implements MealService {
     private MealDao mealDao = new MealDaoImpForCollection();
 
     @Override
-    public void addMeal(Meal meal) {
-        mealDao.addMeal(meal);
+    public void add(Meal meal) {
+        mealDao.add(meal);
     }
 
     @Override
-    public void updateMeal(Meal meal) {
-        mealDao.updateMeal(meal);
+    public void update(Meal meal) {
+        mealDao.updatel(meal);
     }
 
     @Override
-    public void removeMeal(int id) {
-        mealDao.removeMeal(id);
+    public void remove(int id) {
+        mealDao.removel(id);
     }
 
     @Override
-    public Meal getMealById(int id) {
-        return mealDao.getMealById(id);
+    public Meal getById(int id) {
+        return mealDao.getById(id);
     }
 
     @Override
-    public List<Meal> listMeals() {
-        return mealDao.listMeals();
+    public List<Meal> list() {
+        return mealDao.list();
     }
 }
