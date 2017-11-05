@@ -16,29 +16,37 @@
         td {
             padding: 10px;
         }
-        tr{
-            background-color: lightgrey;
+
+        tr {
+            background-color: #F2F2F2;
             border: solid darkgray;
         }
+
         table {
             border-collapse: collapse;
         }
 
-        tr:hover{
+        tr:hover {
             background-color: lightgoldenrodyellow;
         }
-        input:hover{
+
+        input:hover {
             background-color: lightcyan;
         }
-        input[type="submit"]{
+
+        input[type="submit"] {
             padding: 8px;
             width: 100px;
+            border-radius: 10px;
+            box-shadow: darkgray;
         }
-        input:focus{
+
+        input:focus {
             border-color: #0088cc;
         }
     </style>
 </head>
+
 <body>
 <h3><a href="index.html">Home</a></h3>
 <h2>Meal list -</h2>
@@ -70,15 +78,15 @@
     <table>
         <tr>
             <td><label for="date-field">Date</label></td>
-            <td><input type="datetime-local" name="Date" id="date-field"></td>
+            <td><input type="datetime-local" name="Date" id="date-field" required></td>
         </tr>
         <tr>
             <td><label for="description-field">Description </label></td>
-            <td><input type="text" name="Description" id="description-field"></td>
+            <td><input type="text" name="Description" id="description-field" required></td>
         </tr>
         <tr>
             <td><label for="calories-field">Calories </label></td>
-            <td><input type="text" name="Calories" id="calories-field"></td>
+            <td><input type="text" name="Calories" id="calories-field" required></td>
         </tr>
         <c:if test="${isEdit}">
             <tr>
