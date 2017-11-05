@@ -52,12 +52,12 @@ public class MealServlet extends HttpServlet {
         String description = req.getParameter("Description");
         String calories = req.getParameter("Calories");
         String mealIdForEdit = req.getParameter("mealIdForEdit");
-        boolean isEdit = mealIdForEdit != null || (req.getParameter("isEdit") != null && req.getParameter("isEdit").equals("true"));
+        boolean isEdit = mealIdForEdit != null;
         Meal meal;
         if (date != null && description != null && calories != null) {
             meal = new Meal(LocalDateTime.parse(date), description, Integer.parseInt(calories));
 
-            if (isEdit) {
+            if (isEdit  || (req.getParameter("isEdit") != null && req.getParameter("isEdit").equals("true"))) {
                 log.debug("Edit meal");
                 meal.setId(Integer.parseInt(req.getParameter("mealId")));
                 mealService.updateMeal(meal);
