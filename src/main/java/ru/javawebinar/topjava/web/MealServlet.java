@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.MealServiceImp;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -35,10 +34,8 @@ public class MealServlet extends HttpServlet {
                 String mealIdForDelete = request.getParameter("mealIdForDelete");
                 mealService.remove(Integer.parseInt(mealIdForDelete));
 
-                log.debug("Forward to meal.jsp from GET");
-                request.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
-                //response.sendRedirect("meal.jsp");        - doesn't show mealList
-                break;
+                response.sendRedirect("http://localhost:8080/topjava/meal");
+                return;
             }
             case "isupdate": {
                 log.debug("Put data for update");
@@ -46,9 +43,7 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("mealIdForUpdate", mealIdForUpdate);
                 request.setAttribute("isUpdate", true);
                 Meal meal = mealService.getById(Integer.parseInt(mealIdForUpdate));
-                request.setAttribute("updateDate", meal.getDate());
-                request.setAttribute("updateDesc", meal.getDescription());
-                request.setAttribute("updateCal", meal.getCalories());
+                request.setAttribute("meal",meal==null?new Meal(LocalDateTime.now(),"",0):meal);
                 break;
             }
             case "info":
@@ -56,7 +51,7 @@ public class MealServlet extends HttpServlet {
         }
         log.debug("Forward to meal.jsp from GET");
         request.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
-        request.getRequestDispatcher("meal.jsp").forward(request, response);
+        request.getRequestDispatcher("/meal.jsp").forward(request, response);
     }
 
     @Override
@@ -76,19 +71,21 @@ public class MealServlet extends HttpServlet {
             case "add": {
                 log.debug("Add meal");
                 mealService.add(meal);
-                break;
+                resp.sendRedirect("http://localhost:8080/topjava/meal");
+                return;
             }
             case "update": {
                 log.debug("Update meal");
                 meal.setId(Integer.parseInt(mealIdForUpdate));
                 mealService.update(meal);
-                break;
+                resp.sendRedirect("http://localhost:8080/topjava/meal");
+                return;
             }
             case "info":
             default:
         }
         log.debug("Forward to meal.jsp from POST");
         req.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealService.list(), LocalTime.MIN, LocalTime.MAX, 2000));
-        req.getRequestDispatcher("meal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/meal.jsp").forward(req, resp);
     }
 }

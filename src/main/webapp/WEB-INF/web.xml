@@ -13,7 +13,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>userServlet</servlet-name>
-        <url-pattern>/users</url-pattern>
+        <url-pattern>/topjava/users</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -23,7 +23,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>mealServlet</servlet-name>
-        <url-pattern>/meal</url-pattern>
+        <url-pattern>/topjava/meal</url-pattern>
     </servlet-mapping>
 
 </web-app>

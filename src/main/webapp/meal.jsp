@@ -5,6 +5,9 @@
 <head>
     <title>Meals</title>
     <style>
+        body{
+            font-family: Arial;
+        }
         .red {
             color: red;
         }
@@ -12,22 +15,30 @@
         .green {
             color: green;
         }
-
-        td {
-            padding: 10px;
+        table.list td {
+            border-right: 1px solid black;
         }
 
-        tr {
-            background-color: #F2F2F2;
-            border: solid darkgray;
+        .last{
+            border-right: none;
         }
 
-        table {
+        table.list  {
             border-collapse: collapse;
+            width: 60%;
+            border:none;
+        }
+
+        table{
+            border-collapse: collapse;
+            border:1px solid black;
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
         }
 
         tr:hover {
-            background-color: lightgoldenrodyellow;
+            background-color: lightcyan;
         }
 
         input[type="submit"]:hover {
@@ -40,6 +51,10 @@
             border-radius: 10px;
             box-shadow: darkgray;
         }
+        input{
+            width: 200px;
+            padding: 5px;
+        }
 
         input:focus {
             border-color: #0088cc;
@@ -48,23 +63,7 @@
 </head>
 
 <body>
-<h3><a href="index.html">Home</a></h3>
-<h2>Meal list -</h2>
-<table>
-    <c:forEach items="${mealList}" var="meal">
-        <tr class=<c:out value="${meal.isExceed()==true? 'red' : 'green'}"/>>
-            <td>${meal.id}</td>
-            <td> ${meal.dateTime.toLocalDate()}</td>
-            <td>${meal.description}</td>
-            <td>${meal.calories}</td>
-            <td><a href="meal?action=isupdate&mealIdForUpdate=${meal.id}" s><img src="Edit.png" width="50" height="50"
-                                                                                 alt="Update"/> </a></td>
-            <td><a href="meal?action=delete&mealIdForDelete=${meal.id}"><img src="Delete.png" width="30" height="30"
-                                                                             alt="Delete"/></a></td>
-        </tr>
-    </c:forEach>
-</table>
-<br>
+<h3><a href="/index.html">Home</a></h3>
 
 <h2><c:out value="${isUpdate? 'Pease put data below to UPDATE meal':'ADD meal'}"/></h2>
 
@@ -80,12 +79,12 @@
         <tr>
             <td><label for="description-field">Description </label></td>
             <td><input type="text" name="Description" id="description-field" required
-                       <c:if test="${isUpdate!=null}">placeholder="${updateDesc}"</c:if>></td>
+                       <c:if test="${isUpdate!=null}">placeholder="${meal.description}"</c:if>></td>
         </tr>
         <tr>
             <td><label for="calories-field">Calories </label></td>
             <td><input type="number" name="Calories" id="calories-field" required
-                       <c:if test="${isUpdate!=null}">placeholder="${updateCal}"</c:if>></td>
+                       <c:if test="${isUpdate!=null}">placeholder="${meal.calories}"</c:if>></td>
         </tr>
         <c:if test="${isUpdate}">
             <tr>
@@ -100,6 +99,24 @@
                 <td colspan="2"><input type="submit" value="Add"></td>
             </tr>
         </c:if>
+    </table>
+    <br>
+
+    <h2>Meal list -</h2>
+    <table class="list">
+        <c:forEach items="${mealList}" var="meal">
+            <tr class=<c:out value="${meal.isExceed()==true? 'red' : 'green'}"/>>
+                <td>${meal.id}</td>
+                <td> ${meal.dateTime.toLocalDate()}</td>
+                <td>${meal.dateTime.toLocalTime()}</td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
+                <td><a href="meal?action=isupdate&mealIdForUpdate=${meal.id}" s><img src="/Edit.png" width="50" height="50"
+                                                                                     alt="Update"/> </a></td>
+                <td class="last"><a href="meal?action=delete&mealIdForDelete=${meal.id}"><img src="/Delete.png" width="30" height="30"
+                                                                                              alt="Delete"/></a></td>
+            </tr>
+        </c:forEach>
     </table>
 </form>
 </body>

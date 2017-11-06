@@ -52,12 +52,7 @@ public class MealDaoImpForCollection implements MealDao {
 
     @Override
     public Meal getById(int id){
-        try {
             return mealList.get(id);
-        }
-        catch (Exception e){
-            return null;
-        }
     }
 
     public static AtomicInteger getAtomicId() {
