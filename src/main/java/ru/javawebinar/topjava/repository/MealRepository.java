@@ -6,11 +6,11 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 public interface MealRepository {
-    Meal save(Meal meal);
+    Meal save(Meal meal, int userId);
 
-    boolean delete(int id);
+    boolean delete(int id, int userId);
 
-    Meal get(int id);
+    Meal get(int id, int userId);
 
-    Collection<Meal> getAll(LocalDate start, LocalDate end);
+    Collection<Meal> getAll(LocalDate start, LocalDate end, int userId);
 }

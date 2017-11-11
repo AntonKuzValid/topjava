@@ -7,13 +7,13 @@ import java.util.Collection;
 
 public interface MealService {
 
-    Meal create(Meal meal);
+    Meal create(Meal meal, int userId);
 
-    void delete(int id);
+    void delete(int id, int userId);
 
-    Meal get(int id);
+    Meal get(int id, int userId);
 
-    void update(Meal meal);
+    void update(Meal meal, int userId);
 
-    Collection<Meal> getAll(LocalDate start, LocalDate end);
+    Collection<Meal> getAll(LocalDate start, LocalDate end, int userId);
 }

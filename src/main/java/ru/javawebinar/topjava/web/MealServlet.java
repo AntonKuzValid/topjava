@@ -36,11 +36,12 @@ public class MealServlet extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String userId=request.getParameter("user");
-        if (userId!=null){
+        String userId = request.getParameter("user");
+        if (userId != null) {
             AuthorizedUser.setId(Integer.parseInt(userId));
             response.sendRedirect("meals");
             return;
@@ -54,8 +55,8 @@ public class MealServlet extends HttpServlet {
                 Integer.valueOf(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (id.isEmpty() )mealRestController.create(meal);
-        else mealRestController.update(meal,Integer.valueOf(id));
+        if (id.isEmpty()) mealRestController.create(meal);
+        else mealRestController.update(meal, Integer.valueOf(id));
         response.sendRedirect("meals");
     }
 
@@ -83,22 +84,23 @@ public class MealServlet extends HttpServlet {
                 log.info("getAll");
                 request.setAttribute("meals",
                         mealRestController.getAll(
-                                request.getParameter("startDate")!=null&&!request.getParameter("startDate").isEmpty()?
-                                        LocalDate.parse(request.getParameter("startDate")):null,
-                                request.getParameter("endDate")!=null&&!request.getParameter("endDate").isEmpty()?
-                                        LocalDate.parse(request.getParameter("endDate")):null,
-                                request.getParameter("startTime")!=null&&!request.getParameter("startTime").isEmpty()?
-                                        LocalTime.parse(request.getParameter("startTime")):null,
-                                request.getParameter("endTime")!=null&&!request.getParameter("endTime").isEmpty()?
-                                        LocalTime.parse(request.getParameter("endTime")):null));
+                                request.getParameter("startDate") != null && !request.getParameter("startDate").isEmpty() ?
+                                        LocalDate.parse(request.getParameter("startDate")) : null,
+                                request.getParameter("endDate") != null && !request.getParameter("endDate").isEmpty() ?
+                                        LocalDate.parse(request.getParameter("endDate")) : null,
+                                request.getParameter("startTime") != null && !request.getParameter("startTime").isEmpty() ?
+                                        LocalTime.parse(request.getParameter("startTime")) : null,
+                                request.getParameter("endTime") != null && !request.getParameter("endTime").isEmpty() ?
+                                        LocalTime.parse(request.getParameter("endTime")) : null));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
-        this.destroy();
     }
 
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.valueOf(paramId);
     }
+
+
 }

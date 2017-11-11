@@ -19,41 +19,41 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach(meal -> save(meal, AuthorizedUser.id()));
         repository.get(1).setUserId(2);
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
         }
         Meal mealInRep=repository.get(meal.getId());
-        if (mealInRep!=null&&mealInRep.getUserId()!=AuthorizedUser.id()) return null;
+        if (mealInRep!=null&&mealInRep.getUserId()!=userId) return null;
         repository.put(meal.getId(), meal);
-        meal.setUserId(AuthorizedUser.id());
+        meal.setUserId(userId);
         return meal;
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(int id, int userId) {
         Meal meal = repository.get(id);
-        if (meal == null || meal.getUserId() != AuthorizedUser.id()) return false;
+        if (meal == null || meal.getUserId() != userId) return false;
         repository.remove(id);
         return true;
     }
 
     @Override
-    public Meal get(int id) {
+    public Meal get(int id, int userId) {
         Meal meal = repository.get(id);
-        if (meal == null || meal.getUserId() != AuthorizedUser.id()) return null;
+        if (meal == null || meal.getUserId() != userId) return null;
         return meal;
     }
 
     @Override
-    public Collection<Meal> getAll(LocalDate start, LocalDate end) {
+    public Collection<Meal> getAll(LocalDate start, LocalDate end, int userId) {
         return repository.values().stream()
-                .filter(m -> m.getUserId() == AuthorizedUser.id())
+                .filter(m -> m.getUserId() == userId)
                 .filter(m-> (DateTimeUtil.isBetween(m.getDate(),start,end)))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());

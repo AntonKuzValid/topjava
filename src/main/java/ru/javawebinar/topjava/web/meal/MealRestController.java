@@ -14,9 +14,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -34,38 +32,38 @@ public class MealRestController {
     public Meal create(Meal meal){
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal);
+        return service.create(meal, AuthorizedUser.id());
     }
 
     public void delete(int id){
         log.info("delete {}", id);
-        service.delete(id);
+        service.delete(id, AuthorizedUser.id());
     }
 
     public Meal get(int id){
         log.info("get {}", id);
-        return service.get(id);
+        return service.get(id, AuthorizedUser.id());
     }
 
     public void update(Meal meal, int id){
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal,id);
-        service.update(meal);
+        service.update(meal, AuthorizedUser.id());
     }
 
     public List<MealWithExceed> getAll(){
         log.info("getAll");
-        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX)), AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())), AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalDate start, LocalDate end){
         log.info("getAllwithFilter");
-        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(start, end)), AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(start, end,AuthorizedUser.id() )), AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalTime start, LocalTime end){
         log.info("getAllwithFilter");
-        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX)),start,end,AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())),start,end,AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
@@ -73,7 +71,7 @@ public class MealRestController {
         if (startDate==null&&endDate==null&&startTime==null&&endTime==null) return getAll();
         if (startDate==null&&endDate==null) return getAll(startTime,endTime);
         if (startTime==null&&endTime==null) return getAll(startDate,endDate);
-        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(startDate, endDate)),startTime,endTime, AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(startDate, endDate, AuthorizedUser.id())),startTime,endTime, AuthorizedUser.getCaloriesPerDay());
     }
 
 }
