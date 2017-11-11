@@ -61,27 +61,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        LocalDate startLocalDate=request.getParameter("startDate")!=null&&!request.getParameter("startDate").isEmpty()?
-                LocalDate.parse(request.getParameter("startDate")):null;
-        LocalDate endLocalDate=request.getParameter("endDate")!=null&&!request.getParameter("endDate").isEmpty()?
-                LocalDate.parse(request.getParameter("endDate")):null;
-        LocalTime startLocalTime=request.getParameter("startTime")!=null&&!request.getParameter("startTime").isEmpty()?
-                LocalTime.parse(request.getParameter("startTime")):null;
-        LocalTime endLocalTime=request.getParameter("endTime")!=null&&!request.getParameter("endTime").isEmpty()?
-                LocalTime.parse(request.getParameter("endTime")):null;
-
         String action = request.getParameter("action");
-
-        if (startLocalDate!=null&&endLocalDate!=null) {
-                action="filterDate";
-        }
-        if (startLocalTime!=null&&endLocalTime!=null){
-            action="filterTime";
-        }
-        if (startLocalDate!=null&&endLocalDate!=null&&startLocalTime!=null&&endLocalTime!=null){
-                action="filterDateandTime";
-        }
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -98,32 +78,23 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-            case "filterDateandTime":
-                log.info("getAllfilterDateandTime");
-                request.setAttribute("meals",
-                        mealRestController.getAll(startLocalDate,endLocalDate,startLocalTime,endLocalTime));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
-            case "filterDate":
-                log.info("getAllfilterDate");
-                request.setAttribute("meals",
-                        mealRestController.getAll(startLocalDate,endLocalDate));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
-            case "filterTime":
-                log.info("getAllfilterTime");
-                request.setAttribute("meals",
-                        mealRestController.getAll(startLocalTime,endLocalTime));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
             case "all":
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        mealRestController.getAll());
+                        mealRestController.getAll(
+                                request.getParameter("startDate")!=null&&!request.getParameter("startDate").isEmpty()?
+                                        LocalDate.parse(request.getParameter("startDate")):null,
+                                request.getParameter("endDate")!=null&&!request.getParameter("endDate").isEmpty()?
+                                        LocalDate.parse(request.getParameter("endDate")):null,
+                                request.getParameter("startTime")!=null&&!request.getParameter("startTime").isEmpty()?
+                                        LocalTime.parse(request.getParameter("startTime")):null,
+                                request.getParameter("endTime")!=null&&!request.getParameter("endTime").isEmpty()?
+                                        LocalTime.parse(request.getParameter("endTime")):null));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
+        this.destroy();
     }
 
     private int getId(HttpServletRequest request) {

@@ -70,6 +70,9 @@ public class MealRestController {
 
     public List<MealWithExceed> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
         log.info("getAllwithFilter");
+        if (startDate==null&&endDate==null&&startTime==null&&endTime==null) return getAll();
+        if (startDate==null&&endDate==null) return getAll(startTime,endTime);
+        if (startTime==null&&endTime==null) return getAll(startDate,endDate);
         return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(startDate, endDate)),startTime,endTime, AuthorizedUser.getCaloriesPerDay());
     }
 
