@@ -30,17 +30,13 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         }
         Meal mealInRep=repository.get(meal.getId());
         if (mealInRep!=null&&mealInRep.getUserId()!=userId) return null;
-        repository.put(meal.getId(), meal);
         meal.setUserId(userId);
-        return meal;
+        return repository.put(meal.getId(), meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        Meal meal = repository.get(id);
-        if (meal == null || meal.getUserId() != userId) return false;
-        repository.remove(id);
-        return true;
+        return repository.get(id) != null && repository.remove(id) != null;
     }
 
     @Override
@@ -48,6 +44,11 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         Meal meal = repository.get(id);
         if (meal == null || meal.getUserId() != userId) return null;
         return meal;
+    }
+
+    @Override
+    public Collection<Meal> getAll(int userId) {
+       return getAll(LocalDate.MIN,LocalDate.MAX,userId);
     }
 
     @Override

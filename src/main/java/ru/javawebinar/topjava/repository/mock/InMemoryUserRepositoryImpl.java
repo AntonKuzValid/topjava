@@ -30,12 +30,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        try {
-            repository.remove(id);
-            return true;
-        }catch (NotFoundException e){
-            return false;
-        }
+        return repository.remove(id) != null;
+
     }
 
     @Override
@@ -58,11 +54,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
         return repository.values().stream()
-                .sorted((u1,u2)->{
-           return u1.getName().compareTo(u2.getName())!=0?
-                    u1.getName().compareTo(u2.getName()):
-                    u1.getEmail().compareTo(u2.getEmail());
-                })
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
 

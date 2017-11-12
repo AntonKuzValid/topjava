@@ -28,24 +28,24 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController mealRestController;
 
+    private ConfigurableApplicationContext appCtx;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
             mealRestController = appCtx.getBean(MealRestController.class);
-        }
     }
 
+    @Override
+    public void destroy() {
+        appCtx.close();
+        super.destroy();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String userId = request.getParameter("user");
-        if (userId != null) {
-            AuthorizedUser.setId(Integer.parseInt(userId));
-            response.sendRedirect("meals");
-            return;
-        }
 
         String id = request.getParameter("id");
 

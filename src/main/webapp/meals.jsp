@@ -45,14 +45,6 @@
 
     </form>
 
-    <form method="post" action="meals">
-        <select name="user">
-            <option name="user1" value="1">User1</option>
-            <option name="user2" value="2">User2</option>
-        </select>
-        <input type="submit" value="Choose user">
-    </form>
-
     <a href="meals?action=create">Add Meal</a>
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">

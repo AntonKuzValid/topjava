@@ -15,5 +15,7 @@ public interface MealService {
 
     void update(Meal meal, int userId);
 
+    Collection<Meal> getAll(int userId);
+
     Collection<Meal> getAll(LocalDate start, LocalDate end, int userId);
 }
