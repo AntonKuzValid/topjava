@@ -45,10 +45,6 @@ public class Meal extends AbstractBaseEntity{
         return dateTime.toLocalTime();
     }
 
-    public boolean isNew() {
-        return id == null;
-    }
-
     public void setUserId(int userId) {
         this.userId = userId;
     }

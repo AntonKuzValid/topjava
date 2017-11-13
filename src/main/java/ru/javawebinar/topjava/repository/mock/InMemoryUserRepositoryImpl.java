@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
     private final Logger log = LoggerFactory.getLogger(InMemoryUserRepositoryImpl.class);
-    private static Map<Integer, User> repository = new ConcurrentHashMap<>();
+    private Map<Integer, User> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
 
@@ -52,7 +52,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        log.info("getAll");
+        log.info("getAllWithFilter");
         return repository.values().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());

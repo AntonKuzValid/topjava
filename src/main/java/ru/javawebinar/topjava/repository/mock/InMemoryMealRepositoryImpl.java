@@ -36,7 +36,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return repository.get(id) != null && repository.remove(id) != null;
+        return get(id,userId) != null && repository.remove(id) != null;
     }
 
     @Override
@@ -47,12 +47,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
-       return getAll(LocalDate.MIN,LocalDate.MAX,userId);
+    public Collection<Meal> getAllWithFilter(int userId) {
+       return getAllWithFilter(LocalDate.MIN,LocalDate.MAX,userId);
     }
 
     @Override
-    public Collection<Meal> getAll(LocalDate start, LocalDate end, int userId) {
+    public Collection<Meal> getAllWithFilter(LocalDate start, LocalDate end, int userId) {
         return repository.values().stream()
                 .filter(m -> m.getUserId() == userId)
                 .filter(m-> (DateTimeUtil.isBetween(m.getDate(),start,end)))

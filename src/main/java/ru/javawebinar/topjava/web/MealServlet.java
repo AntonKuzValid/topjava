@@ -81,7 +81,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                log.info("getAll");
+                log.info("getAllWithFilter");
                 request.setAttribute("meals",
                         mealRestController.getAll(
                                 request.getParameter("startDate") != null && !request.getParameter("startDate").isEmpty() ?

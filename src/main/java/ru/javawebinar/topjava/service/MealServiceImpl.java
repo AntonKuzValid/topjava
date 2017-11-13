@@ -42,11 +42,11 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return repository.getAll(userId);
+        return repository.getAllWithFilter(userId);
     }
 
     @Override
     public Collection<Meal> getAll(LocalDate start, LocalDate end, int userId) {
-        return repository.getAll(start,end, userId);
+        return repository.getAllWithFilter(start,end, userId);
     }
 }
