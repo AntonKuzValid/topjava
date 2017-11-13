@@ -53,17 +53,17 @@ public class MealRestController {
 
     public List<MealWithExceed> getAll(){
         log.info("getAllWithFilter");
-        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())), AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAllWithFilter(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())), AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalDate start, LocalDate end){
         log.info("getAllwithFilter");
-        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAll(start, end,AuthorizedUser.id() )), AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getWithExceeded(new ArrayList<Meal>(service.getAllWithFilter(start, end,AuthorizedUser.id() )), AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalTime start, LocalTime end){
         log.info("getAllwithFilter");
-        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())),start,end,AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAllWithFilter(LocalDate.MIN,LocalDate.MAX, AuthorizedUser.id())),start,end,AuthorizedUser.getCaloriesPerDay());
     }
 
     public List<MealWithExceed> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
@@ -79,7 +79,7 @@ public class MealRestController {
             endDate=endDate==null?LocalDate.MAX:endDate;
             return getAll(startDate,endDate);
         }
-        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAll(startDate, endDate, AuthorizedUser.id())),startTime,endTime, AuthorizedUser.getCaloriesPerDay());
+        return MealsUtil.getFilteredWithExceeded(new ArrayList<Meal>(service.getAllWithFilter(startDate, endDate, AuthorizedUser.id())),startTime,endTime, AuthorizedUser.getCaloriesPerDay());
     }
 
 }

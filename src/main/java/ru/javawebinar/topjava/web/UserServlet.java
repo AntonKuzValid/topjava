@@ -26,6 +26,6 @@ public class UserServlet extends HttpServlet {
         if (userId != null) {
             AuthorizedUser.setId(Integer.parseInt(userId));
         }
-        response.sendRedirect("users");
+        response.sendRedirect("index.html");
     }
 }
