@@ -47,7 +47,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAllWithFilter(int userId) {
+    public Collection<Meal> getAll(int userId) {
        return getAllWithFilter(LocalDate.MIN,LocalDate.MAX,userId);
     }
 

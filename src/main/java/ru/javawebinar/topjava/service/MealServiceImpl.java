@@ -41,8 +41,8 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Collection<Meal> getAllWithFilter(int userId) {
-        return repository.getAllWithFilter(userId);
+    public Collection<Meal> getAll(int userId) {
+        return repository.getAll(userId);
     }
 
     @Override

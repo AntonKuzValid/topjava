@@ -12,7 +12,7 @@ public interface MealRepository {
 
     Meal get(int id, int userId);
 
-    Collection<Meal> getAllWithFilter(int userId);
+    Collection<Meal> getAll(int userId);
 
     Collection<Meal> getAllWithFilter(LocalDate start, LocalDate end, int userId);
 }
