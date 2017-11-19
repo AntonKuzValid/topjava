@@ -83,7 +83,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
         return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND datetime BETWEEN ? AND ? ORDER BY datetime DESC",
                 ROW_MAPPER,
                 userId,
-                Timestamp.valueOf(startDate),
-                Timestamp.valueOf(endDate));
+                startDate,
+                endDate);
     }
 }
