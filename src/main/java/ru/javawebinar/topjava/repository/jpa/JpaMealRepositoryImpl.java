@@ -23,7 +23,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Transactional
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
-            meal.getUser().setId(userId);
+            meal.setUser(em.getReference(User.class,userId));
             em.persist(meal);
             return meal;
         } else {
@@ -51,7 +51,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         User user=em.getReference(User.class,userId);
-        return em.createNamedQuery(Meal.ALL_SORTED)
+        return em.createNamedQuery(Meal.ALL_SORTED, Meal.class)
                 .setParameter("user", user)
                 .getResultList();
     }
@@ -59,7 +59,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         User user=em.getReference(User.class,userId);
-        return em.createNamedQuery(Meal.BETWEEN_SORTED)
+        return em.createNamedQuery(Meal.BETWEEN_SORTED,Meal.class)
                 .setParameter("user", user)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
