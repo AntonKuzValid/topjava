@@ -12,20 +12,19 @@ import java.time.LocalTime;
 
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m where m.user.id=:userId "),
-        @NamedQuery(name = Meal.BETWEEN_SORTED, query = "SELECT m FROM Meal m WHERE m.dateTime between :startDate and :endDate and m.user.id=:userId")
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m where m.user.id=:userId order by m.dateTime desc "),
+        @NamedQuery(name = Meal.BETWEEN_SORTED, query = "SELECT m FROM Meal m WHERE m.dateTime >=?1 and m.dateTime<=?2 and m.user.id=:userId order by m.dateTime desc ")
 })
 @Entity
-@Table(name = "meals")
+@Table(name = "meals" ,uniqueConstraints = {@UniqueConstraint(columnNames = "date_time", name = "meals_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
     public static final String ALL_SORTED = "Meal.getAllSorted";
     public static final String BETWEEN_SORTED = "Meal.getBetweenSorted";
 
-    @Column(name = "datetime", nullable = false,  unique = true)
-    @NotBlank
-    @Convert(converter = DateTimeConverter.class)
+    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
+    @NotNull
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
