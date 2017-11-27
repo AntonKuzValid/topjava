@@ -37,6 +37,7 @@ public class Meal extends AbstractBaseEntity {
 
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @NotNull
     private User user;
 
     public Meal() {

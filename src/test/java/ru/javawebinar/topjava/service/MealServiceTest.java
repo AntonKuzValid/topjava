@@ -1,9 +1,11 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,9 +21,10 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static java.time.temporal.ChronoUnit.MICROS;
-import static java.time.temporal.ChronoUnit.MILLIS;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -35,7 +38,13 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Transactional
 public class MealServiceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(MealService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+
+    private static void logInfo(Description description, String status, long nanos) {
+        String testName = description.getMethodName();
+        logger.info(String.format("Test %s %s, spent %d microseconds",
+                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+    }
 
     static {
         SLF4JBridgeHandler.install();
@@ -47,32 +56,53 @@ public class MealServiceTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+
     @Rule
-    public TestWatcher watcher = new TestWatcher() {
-        LocalDateTime start;
+    public Stopwatch stopwatch = new Stopwatch() {
+
         @Override
-        protected void starting(Description description) {
-            start=LocalDateTime.now();
-            super.starting(description);
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
         }
 
         @Override
-        protected void finished(Description description) {
-            log.debug(start.until(LocalDateTime.now(),MILLIS)+" - time of test execution in mlliseconds");
-            System.out.println(description.getMethodName());
-            super.finished(description);
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed", nanos);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
+            summaryTable.put(description.getMethodName(), nanos);
         }
     };
+
+    private static Map<String, Long> summaryTable = new HashMap<>();
+
+    @AfterClass
+    public static void printSummaryTable() {
+        System.out.println("===================");
+        System.out.println("Summary table");
+        System.out.println("===================");
+        summaryTable.forEach((v, k) -> System.out.println(String.format("Method name - %s,runtime - %d milliseconds", v, TimeUnit.NANOSECONDS.toMillis(k))));
+        System.out.println("===================");
+    }
+
     @Test
     public void testDelete() throws Exception {
         service.delete(MEAL1_ID, USER_ID);
         assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void testDeleteNotFound() throws Exception {
-        service.delete(MEAL1_ID, 1);
+    @Test
+    public void testDeleteNotFound() throws NotFoundException {
         thrown.expect(NotFoundException.class);
+        service.delete(MEAL1_ID, 1);
 
     }
 
@@ -89,10 +119,10 @@ public class MealServiceTest {
         assertMatch(actual, ADMIN_MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testGetNotFound() throws Exception {
-        service.get(MEAL1_ID, ADMIN_ID);
         thrown.expect(NotFoundException.class);
+        service.get(MEAL1_ID, ADMIN_ID);
     }
 
     @Test
@@ -102,10 +132,10 @@ public class MealServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testUpdateNotFound() throws Exception {
-        service.update(MEAL1, ADMIN_ID);
         thrown.expect(NotFoundException.class);
+        service.update(getUpdated(), ADMIN_ID);
     }
 
     @Test
