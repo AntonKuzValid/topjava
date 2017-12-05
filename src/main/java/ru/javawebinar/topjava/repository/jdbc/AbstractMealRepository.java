@@ -36,7 +36,29 @@ public abstract class AbstractMealRepository implements MealRepository {
     }
 
     @Override
-    public abstract Meal save(Meal meal, int userId);
+    public Meal save(Meal meal, int userId) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", meal.getId())
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories())
+                .addValue("date_time", convert(meal.getDateTime()))
+                .addValue("user_id", userId);
+
+
+        if (meal.isNew()) {
+            Number newId = insertMeal.executeAndReturnKey(map);
+            meal.setId(newId.intValue());
+        } else {
+            if (namedParameterJdbcTemplate.update("" +
+                            "UPDATE meals " +
+                            "   SET description=:description, calories=:calories, date_time=:date_time " +
+                            " WHERE id=:id AND user_id=:user_id"
+                    , map) == 0) {
+                return null;
+            }
+        }
+        return meal;
+    };
 
     @Override
     public boolean delete(int id, int userId) {
@@ -57,5 +79,11 @@ public abstract class AbstractMealRepository implements MealRepository {
     }
 
     @Override
-    public abstract List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
+    public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
+        return jdbcTemplate.query(
+                "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
+                ROW_MAPPER, userId,  convert(startDate),  convert(endDate));
+    };
+
+    protected abstract  <T> T convert(LocalDateTime localDateTime);
 }
