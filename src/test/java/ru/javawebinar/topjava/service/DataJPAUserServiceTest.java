@@ -20,7 +20,6 @@ public class DataJPAUserServiceTest extends UserServiceTest {
     public void getUserWithMeals() {
         User actualUser = service.getWithMeals(USER_ID);
         List<Meal> mealList = actualUser.getMeals();
-        mealList.sort(Comparator.comparing(Meal::getDateTime).reversed());
         assertMatch(actualUser, USER);
         MealTestData.assertMatch(mealList, MEALS);
     }
