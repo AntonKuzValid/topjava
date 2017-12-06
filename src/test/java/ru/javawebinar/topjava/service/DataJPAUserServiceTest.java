@@ -19,11 +19,11 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public class DataJPAUserServiceTest extends UserServiceTest {
 
     @Test
-    public void getUserWithMeals(){
+    public void getUserWithMeals() {
         User actualUser = service.getWithMeals(USER_ID);
-        List<Meal> mealList=actualUser.getMeals();
+        List<Meal> mealList = actualUser.getMeals();
         mealList.sort(Comparator.comparing(Meal::getDateTime).reversed());
-        assertMatch(actualUser,USER);
-        MealTestData.assertMatch(mealList,MEALS);
+        assertMatch(actualUser, USER);
+        MealTestData.assertMatch(mealList, MEALS);
     }
 }

@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 @NamedEntityGraph(name = "Meal.details", attributeNodes = @NamedAttributeNode("user"))
 @SuppressWarnings("JpaQlInspection")
 @NamedQueries({

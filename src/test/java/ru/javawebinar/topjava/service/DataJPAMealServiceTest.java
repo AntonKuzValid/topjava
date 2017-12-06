@@ -31,9 +31,9 @@ public class DataJPAMealServiceTest extends MealServiceTest {
 
     @Test
     @Transactional
-    public void getMealWithUser(){
+    public void getMealWithUser() {
         Meal actualMeal = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
-        User actualUser=actualMeal.getUser();
+        User actualUser = actualMeal.getUser();
         assertMatch(actualMeal, ADMIN_MEAL1);
         UserTestData.assertMatch(actualUser, ADMIN);
     }
