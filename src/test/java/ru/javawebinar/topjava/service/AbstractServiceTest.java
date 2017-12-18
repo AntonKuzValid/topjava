@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
@@ -17,6 +15,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
+
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
@@ -55,5 +55,14 @@ abstract public class AbstractServiceTest {
         } catch (Exception e) {
             Assert.assertThat(getRootCause(e), instanceOf(exceptionClass));
         }
+    }
+
+    @Test
+    public void testValidation() throws Exception {
+        isJDBCProfile(xmlApplicationContext);
+    }
+
+    private static void isJDBCProfile(ApplicationContext xmlApplicationContext) {
+        Assume.assumeFalse(Arrays.stream(xmlApplicationContext.getEnvironment().getActiveProfiles()).anyMatch(prf -> prf.equals("jdbc")));
     }
 }
