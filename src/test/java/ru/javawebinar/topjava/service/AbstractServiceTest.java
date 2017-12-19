@@ -59,10 +59,10 @@ abstract public class AbstractServiceTest {
 
     @Test
     public void testValidation() throws Exception {
-        isJDBCProfile(xmlApplicationContext);
+        Assume.assumeFalse(isJDBCProfile(xmlApplicationContext));
     }
 
-    private static void isJDBCProfile(ApplicationContext xmlApplicationContext) {
-        Assume.assumeFalse(Arrays.stream(xmlApplicationContext.getEnvironment().getActiveProfiles()).anyMatch(prf -> prf.equals("jdbc")));
+    private static boolean isJDBCProfile(ApplicationContext xmlApplicationContext) {
+        return Arrays.stream(xmlApplicationContext.getEnvironment().getActiveProfiles()).anyMatch(prf -> prf.equals("jdbc"));
     }
 }
