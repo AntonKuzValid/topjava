@@ -80,6 +80,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         updated.setRoles(roles);
         service.update(updated);
         assertMatch(service.get(USER_ID), updated);
+
+        updated=new User(ADMIN);
+        updated.setName("new Admin");
+        updated.setRoles(Collections.singleton(Role.ROLE_ADMIN));
+        service.update(updated);
+        assertMatch(service.get(ADMIN_ID),updated);
     }
 
     @Test

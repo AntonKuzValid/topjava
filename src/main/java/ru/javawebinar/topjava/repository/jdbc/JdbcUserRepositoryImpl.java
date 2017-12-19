@@ -18,7 +18,6 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,16 +33,11 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     private final SimpleJdbcInsert insertUser;
 
-    private final SimpleJdbcInsert insertRoles;
-
     @Autowired
     public JdbcUserRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertUser = new SimpleJdbcInsert(dataSource)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-
-        this.insertRoles = new SimpleJdbcInsert(dataSource)
-                .withTableName("user_roles");
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -57,19 +51,14 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-//            jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), newKey.intValue()));
-            insertRoles.executeBatch(createMapBatch(user.getRoles(), newKey.intValue()).toArray(new Map[user.getRoles().size()]));
+            jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), newKey.intValue()));
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE users SET name=:name, email=:email, password=:password, " +
                         "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
             return null;
         } else {
-            List<Object[]> batch;
-            if ((batch = createBatch(user.getRoles(), user.getId())).size() > 1) {
-                jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?", batch.get(0), new int[]{Types.VARCHAR, Types.INTEGER});
-                jdbcTemplate.update("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", batch.get(1), new int[]{Types.VARCHAR, Types.INTEGER});
-            } else
-                jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?", batch.get(0), new int[]{Types.VARCHAR, Types.INTEGER});
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+            jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), user.getId()));
         }
         return user;
     }
@@ -77,17 +66,6 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     private static List<Object[]> createBatch(Set<Role> roles, int id) {
         List<Object[]> batch = new ArrayList<>();
         roles.forEach(r -> batch.add(new Object[]{r.toString(), id}));
-        return batch;
-    }
-
-    private static List<Map<String, Object>> createMapBatch(Set<Role> roles, int id) {
-        List<Map<String, Object>> batch = new ArrayList<>();
-        roles.forEach(r -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("user_id", id);
-            map.put("role", r.toString());
-            batch.add(map);
-        });
         return batch;
     }
 

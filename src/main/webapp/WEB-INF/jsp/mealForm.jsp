@@ -11,9 +11,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h3><a href="../../"><spring:message code="common.home"/></a></h3>
-    <%--<h2>${meal.id == null ? 'Create meal' : 'Edit meal'}</h2>--%>
-    <h2><c:if test="${meal.id == null}"><spring:message code="meal.addMeal"/></c:if>
-        <c:if test="${meal.id != null}"><spring:message code="meal.updateMeal"/></c:if></h2>
+    <h2><spring:message code="${meal.id == null ?'meal.addMeal':'meal.updateMeal'}"/></h2>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form:form method="post" action="/meals/mealForm" modelAttribute="meal">
