@@ -18,15 +18,15 @@
         <form:input type="hidden" path="id" value="${meal.id}"/>
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
-            <dd><form:input type="datetime-local" value="${meal.dateTime}" path="dateTime"/></dd>
+            <dd><form:input type="datetime-local" value="${meal.dateTime}" path="dateTime" required="required"/></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.description"/>:</dt>
-            <dd><form:input type="text" value="${meal.description}" path="description" size="40"/></dd>
+            <dd><form:input type="text" value="${meal.description}" path="description" size="40" required="required"/></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.calories"/>:</dt>
-            <dd><form:input type="number" value="${meal.calories}" path="calories"/></dd>
+            <dd><form:input type="number" value="${meal.calories}" path="calories" required="required"/></dd>
         </dl>
         <button type="submit"><spring:message code="meal.saveMeal"/></button>
         <button onclick="window.history.back()" type="button"><spring:message code="common.cancel"/></button>

@@ -51,15 +51,12 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), newKey.intValue()));
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE users SET name=:name, email=:email, password=:password, " +
                         "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
             return null;
-        } else {
-            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
-            jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), user.getId()));
-        }
+        } else jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        jdbcTemplate.batchUpdate("INSERT  INTO user_roles (role,user_id) VALUES (?,?)", createBatch(user.getRoles(), user.getId()));
         return user;
     }
 
