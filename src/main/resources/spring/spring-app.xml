@@ -17,13 +17,4 @@
     <!--<context:annotation-config/>-->
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
-
-    <bean id="registar" class="ru.javawebinar.topjava.web.CustomDateEditorRegistrar"/>
-    <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-        <property name="propertyEditorRegistrars">
-            <list>
-                <ref bean="registar"/>
-            </list>
-        </property>
-    </bean>
 </beans>

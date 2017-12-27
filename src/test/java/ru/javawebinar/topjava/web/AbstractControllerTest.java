@@ -28,7 +28,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @ActiveProfiles(resolver = AllActiveProfileResolver.class)
-abstract public class AbstractControllerTest {
+abstract public class AbstractControllerTest<T> {
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 

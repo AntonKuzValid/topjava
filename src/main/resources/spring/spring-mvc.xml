@@ -8,7 +8,7 @@
 
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
 
-    <mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionService">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper"/>
@@ -24,6 +24,32 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <!--Doesn't work. Can't understand why?-->
+    <!--<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">-->
+    <!--<property name="customEditors">-->
+    <!--<map>-->
+    <!--<entry key="java.time.LocalDate" value="ru.javawebinar.topjava.web.formatters.MealsDateEditor"/>-->
+    <!--</map>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <!--Doesn't work. Can't understand why?-->
+    <!--<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">-->
+    <!--<property name="propertyEditorRegistrars">-->
+    <!--<list>-->
+    <!--<bean id="customDateEditorRegistrar" class="ru.javawebinar.topjava.web.formatters.CustomDateEditorRegistrar"/>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatterRegistrars">
+            <set>
+                <bean class="ru.javawebinar.topjava.web.formatters.LocalDateTimeFormatterRegistar"/>
+            </set>
+        </property>
+    </bean>
 
 
     <context:component-scan base-package="ru.javawebinar.**.web"/>
