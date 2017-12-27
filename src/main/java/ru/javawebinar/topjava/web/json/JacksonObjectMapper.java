@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.json;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -18,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @link http://wiki.fasterxml.com/JacksonHowToCustomSerializers
  */
 public class JacksonObjectMapper extends ObjectMapper {
+    private static final ObjectMapper MAPPER = new JacksonObjectMapper();
 
     public JacksonObjectMapper() {
         registerModule(new Hibernate5Module());
@@ -28,5 +28,9 @@ public class JacksonObjectMapper extends ObjectMapper {
         setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+
+    public static ObjectMapper getMapper() {
+        return MAPPER;
     }
 }
