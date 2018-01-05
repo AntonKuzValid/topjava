@@ -1,10 +1,15 @@
 function makeEditable() {
     $(".delete").click(function () {
-        deleteRow($(this).attr("id"));
+        deleteRow($(this).parent().parent().attr("id"));
     });
 
     $("#detailsForm").submit(function () {
         save();
+        return false;
+    });
+
+    $("#filter-form").submit(function () {
+        filter();
         return false;
     });
 
@@ -21,12 +26,37 @@ function add() {
     $("#editRow").modal();
 }
 
+function update(id) {
+    if ($("#" + id).find("input").prop("checked")) {
+        $.post(ajaxUrl + "enable",
+            {
+                id: id
+            },
+            function () {
+                $("#" + id).css("color", "black");
+                successNoty("Saved");
+            }
+        );
+    }
+    else {
+        $.post(ajaxUrl + "disable",
+            {
+                id: id
+            },
+            function () {
+                $("#" + id).css("color", "lightgray");
+                successNoty("Saved");
+            }
+        );
+    }
+}
+
 function deleteRow(id) {
     $.ajax({
         url: ajaxUrl + id,
         type: "DELETE",
         success: function () {
-            updateTable();
+            filter();
             successNoty("Deleted");
         }
     });
@@ -34,6 +64,7 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ajaxUrl, function (data) {
+        $("#filter-form")[0].reset();
         datatableApi.clear().rows.add(data).draw();
     });
 }
@@ -46,10 +77,24 @@ function save() {
         data: form.serialize(),
         success: function () {
             $("#editRow").modal("hide");
-            updateTable();
+            filter();
             successNoty("Saved");
         }
     });
+}
+
+function filter() {
+    var form = $("#filter-form");
+    if (form.length) {
+        $.get(ajaxUrl + "filter?" + form.serialize(), function (data) {
+            datatableApi.clear().rows.add(data).draw();
+        });
+    }
+    else {
+        $.get(ajaxUrl, function (data) {
+            datatableApi.clear().rows.add(data).draw();
+        });
+    }
 }
 
 var failedNote;
@@ -67,7 +112,8 @@ function successNoty(text) {
         text: "<span class='glyphicon glyphicon-ok'></span> &nbsp;" + text,
         type: 'success',
         layout: "bottomRight",
-        timeout: 1000
+        timeout: 1000,
+        progressBar: true
     }).show();
 }
 

@@ -3,32 +3,59 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
-<jsp:include page="fragments/headTag.jsp"/>
 <body>
-<jsp:include page="fragments/bodyHeader.jsp"/>
+<div class="modal fade" id="editRow">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title"><spring:message code= 'meal.add'/></h2>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="detailsForm">
+                    <input type="hidden" id="id" name="id">
 
-<section>
-    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <h3><spring:message code="${meal.isNew() ? 'meal.add' : 'meal.edit'}"/></h3>
-    <hr>
-    <form method="post" action="meals">
-        <input type="hidden" name="id" value="${meal.id}">
-        <dl>
-            <dt><spring:message code="meal.dateTime"/>:</dt>
-            <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime" required></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.description"/>:</dt>
-            <dd><input type="text" value="${meal.description}" size=40 name="description" required></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.calories"/>:</dt>
-            <dd><input type="number" value="${meal.calories}" name="calories" required></dd>
-        </dl>
-        <button type="submit"><spring:message code="common.save"/></button>
-        <button onclick="window.history.back()" type="button"><spring:message code="common.cancel"/></button>
-    </form>
-</section>
-<jsp:include page="fragments/footer.jsp"/>
+                    <div class="form-group">
+                        <label for="dateTime" class="control-label col-xs-3"><spring:message
+                                code="meal.dateTime"/></label>
+
+                        <div class="col-xs-9">
+                            <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
+                                   placeholder="<spring:message code="meal.dateTime"/>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="control-label col-xs-3"><spring:message
+                                code="meal.description"/></label>
+
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="description" name="description"
+                                   placeholder="<spring:message code="meal.description"/>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="calories" class="control-label col-xs-3"><spring:message
+                                code="meal.calories"/></label>
+
+                        <div class="col-xs-9">
+                            <input type="number" class="form-control" id="calories" name="calories"
+                                   placeholder="<spring:message code="meal.calories"/>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-offset-3 col-xs-9">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
