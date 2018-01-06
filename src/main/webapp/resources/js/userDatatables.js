@@ -40,3 +40,19 @@ $(function () {
     });
     makeEditable();
 });
+
+// Browser don't find this function
+function enableUser(id) {
+    var isChecked = $("#" + id).find("input").prop("checked");
+    $.post(ajaxUrl + "enable",
+        {
+            id: id,
+            enabled: isChecked
+        },
+        function () {
+            $("#" + id).css("color", isChecked ? "black" : "lightgrey");
+            $("#" + id).find("input").prop("checked", isChecked);
+            successNoty("Saved");
+        }
+    );
+}

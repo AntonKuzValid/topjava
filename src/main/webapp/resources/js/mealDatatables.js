@@ -28,9 +28,26 @@ $(function () {
         "order": [
             [
                 0,
-                "asc"
+                "desk"
             ]
         ]
     });
     makeEditable();
+
+    $("#filter-form").submit(function () {
+        filter();
+        return false;
+    });
 });
+
+function filter() {
+    var form = $("#filter-form");
+    $.get(ajaxUrl + "filter?" + form.serialize(), function (data) {
+        datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+function resetMealForm() {
+    $("#filter-form")[0].reset();
+    updateTable();
+}

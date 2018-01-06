@@ -8,11 +8,6 @@ function makeEditable() {
         return false;
     });
 
-    $("#filter-form").submit(function () {
-        filter();
-        return false;
-    });
-
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -21,34 +16,24 @@ function makeEditable() {
     $.ajaxSetup({cache: false});
 }
 
+function enableUser(id) {
+    var isChecked = $("#" + id).find("input").prop("checked");
+    $.post(ajaxUrl + "enable",
+        {
+            id: id,
+            enabled: isChecked
+        },
+        function () {
+            $("#" + id).css("color", isChecked ? "black" : "lightgrey");
+            $("#" + id).find("input").prop("checked", isChecked);
+            successNoty("Saved");
+        }
+    );
+}
+
 function add() {
     $("#detailsForm").find(":input").val("");
     $("#editRow").modal();
-}
-
-function update(id) {
-    if ($("#" + id).find("input").prop("checked")) {
-        $.post(ajaxUrl + "enable",
-            {
-                id: id
-            },
-            function () {
-                $("#" + id).css("color", "black");
-                successNoty("Saved");
-            }
-        );
-    }
-    else {
-        $.post(ajaxUrl + "disable",
-            {
-                id: id
-            },
-            function () {
-                $("#" + id).css("color", "lightgray");
-                successNoty("Saved");
-            }
-        );
-    }
 }
 
 function deleteRow(id) {
@@ -56,17 +41,19 @@ function deleteRow(id) {
         url: ajaxUrl + id,
         type: "DELETE",
         success: function () {
-            filter();
+            updateTable();
             successNoty("Deleted");
         }
     });
 }
 
 function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        $("#filter-form")[0].reset();
-        datatableApi.clear().rows.add(data).draw();
-    });
+    if ($("#filter-form").length) filter();
+    else {
+        $.get(ajaxUrl, function (data) {
+            datatableApi.clear().rows.add(data).draw();
+        });
+    }
 }
 
 function save() {
@@ -77,24 +64,10 @@ function save() {
         data: form.serialize(),
         success: function () {
             $("#editRow").modal("hide");
-            filter();
+            updateTable();
             successNoty("Saved");
         }
     });
-}
-
-function filter() {
-    var form = $("#filter-form");
-    if (form.length) {
-        $.get(ajaxUrl + "filter?" + form.serialize(), function (data) {
-            datatableApi.clear().rows.add(data).draw();
-        });
-    }
-    else {
-        $.get(ajaxUrl, function (data) {
-            datatableApi.clear().rows.add(data).draw();
-        });
-    }
 }
 
 var failedNote;

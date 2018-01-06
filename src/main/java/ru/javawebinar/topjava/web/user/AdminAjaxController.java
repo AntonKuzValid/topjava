@@ -36,12 +36,9 @@ public class AdminAjaxController extends AbstractUserController {
     }
 
     @PostMapping("/enable")
-    public void enable(@RequestParam("id") Integer id) {
-        super.enable(id);
+    public void enableOrDisable(@RequestParam("id") Integer id,
+                                @RequestParam("enabled") Boolean enabled) {
+        super.enableOrDisable(id, enabled);
     }
 
-    @PostMapping("/disable")
-    public void disable(@RequestParam("id") Integer id) {
-        super.disable(id);
-    }
 }
