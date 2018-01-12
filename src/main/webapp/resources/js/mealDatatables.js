@@ -16,11 +16,22 @@ function clearFilter() {
 
 $(function () {
     datatableApi = $("#datatable").DataTable({
+        "ajax": {
+            "url": ajaxUrl,
+            "dataSrc": ""
+        },
         "paging": false,
         "info": true,
         "columns": [
             {
-                "data": "dateTime"
+                "data": "dateTime",
+                "render": function (date, type, row) {
+                    if (type === "display") {
+                        var dateTime = date.split('T');
+                        return dateTime[0] + " " + dateTime[1].substring(0, 5);
+                    }
+                    return date;
+                }
             },
             {
                 "data": "description"
@@ -29,12 +40,14 @@ $(function () {
                 "data": "calories"
             },
             {
-                "defaultContent": "Edit",
-                "orderable": false
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderEditBtn
             },
             {
-                "defaultContent": "Delete",
-                "orderable": false
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderDeleteBtn
             }
         ],
         "order": [
@@ -42,7 +55,33 @@ $(function () {
                 0,
                 "desc"
             ]
-        ]
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            $(row).addClass(data.exceed ? "exceeded" : "normal");
+        },
+        "initComplete": makeEditable
     });
-    makeEditable();
+
+    $('#startTime, #endTime').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onSelectTime: function (current_time, $input) {
+            $(this).datetimepicker('hide')
+        }
+    });
+
+    $('#startDate, #endDate').datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        onSelectDate: function (current_time, $input) {
+            $(this).datetimepicker('hide')
+        }
+    });
+
+    $('#dateTime').datetimepicker({
+        format: 'Y-m-d\\TH:i:s',
+        onSelectTime: function (current_time, $input) {
+            $(this).datetimepicker('hide')
+        }
+    });
 });
