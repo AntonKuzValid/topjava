@@ -5,7 +5,7 @@ function updateTable() {
     $.ajax({
         type: "POST",
         url: ajaxUrl + "filter",
-        data: $("#filter").serialize(),
+        data: $("#filter").serialize()
     }).done(updateTableByData);
 }
 
@@ -27,8 +27,7 @@ $(function () {
                 "data": "dateTime",
                 "render": function (date, type, row) {
                     if (type === "display") {
-                        var dateTime = date.split('T');
-                        return dateTime[0] + " " + dateTime[1].substring(0, 5);
+                        return date.replace('T',' ').substring(0,16);
                     }
                     return date;
                 }
@@ -81,7 +80,7 @@ $(function () {
     $('#dateTime').datetimepicker({
         format: 'Y-m-d\\TH:i:s',
         onSelectTime: function (current_time, $input) {
-            $(this).datetimepicker('hide')
+            $(this).datetimepicker('hide');
         }
     });
 });
