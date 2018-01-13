@@ -20,7 +20,7 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            form.find("input[name='" + key + "']").val(key === 'dateTime' ? value.replace('T', ' ').substring(0, 16) : value);
+            form.find("input[name='" + key + "']").val(key === 'dateTime' ? value.replace('T', ' ') : value);
         });
         $('#editRow').modal();
     });
@@ -41,6 +41,8 @@ function updateTableByData(data) {
 }
 
 function save() {
+    var dateTime = form.find('#' + 'dateTime').val().replace(' ','T');
+    form.find('#' + 'dateTime').val(dateTime);
     $.ajax({
         type: "POST",
         url: ajaxUrl,

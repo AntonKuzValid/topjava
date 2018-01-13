@@ -78,7 +78,7 @@ $(function () {
     });
 
     $('#dateTime').datetimepicker({
-        format: 'Y-m-d\\TH:i:s',
+        format: 'Y-m-d H:i:s',
         onSelectTime: function (current_time, $input) {
             $(this).datetimepicker('hide');
         }
