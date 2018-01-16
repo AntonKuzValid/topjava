@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +7,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,7 +37,7 @@ public class AdminAjaxController extends AbstractUserController {
     @PostMapping
     public void createOrUpdate(@Valid UserTo userTo, BindingResult result) {
         if (result.hasErrors()) {
-            throw new DataIntegrityViolationException(ValidationUtil.getErrorResponse(result));
+            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
         }
         if (userTo.isNew()) {
             super.create(UserUtil.createNewFromTo(userTo));

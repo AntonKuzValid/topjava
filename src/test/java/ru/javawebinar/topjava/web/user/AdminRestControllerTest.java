@@ -8,7 +8,6 @@ import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.Collections;
 
@@ -89,7 +88,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
-                .content(JsonUtil.writeValue(updated)))
+                .content(UserTestData.jsonWithPassword(updated, updated.getPassword())))
                 .andExpect(status().isOk());
 
         assertMatch(userService.get(USER_ID), updated);
@@ -109,6 +108,16 @@ public class AdminRestControllerTest extends AbstractControllerTest {
 
         assertMatch(returned, expected);
         assertMatch(userService.getAll(), ADMIN, expected, USER);
+    }
+
+    @Test
+    public void testCreateInvalid() throws Exception {
+        User expected = new User(null, "", "", "0", 0, Role.ROLE_USER, Role.ROLE_ADMIN);
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(UserTestData.jsonWithPassword(expected, "0")))
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

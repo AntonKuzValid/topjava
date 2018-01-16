@@ -1,12 +1,12 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -38,7 +38,7 @@ public class MealAjaxController extends AbstractMealController {
     @PostMapping
     public void createOrUpdate(@Valid Meal meal, BindingResult result) {
         if (result.hasErrors()) {
-            throw new DataIntegrityViolationException(ValidationUtil.getErrorResponse(result));
+            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
         }
         if (meal.isNew()) {
             super.create(meal);
