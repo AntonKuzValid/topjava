@@ -5,6 +5,7 @@ import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.StringJoiner;
 
 public class ValidationUtil {
@@ -70,7 +71,12 @@ public class ValidationUtil {
         return joiner.toString();
     }
 
-    public static String getErrorMessage(Exception e, Throwable rootCause) {
-        return e instanceof DataIntegrityViolationException ? "User with this email already exists" : rootCause.toString();
+    public static String getErrorMessage(Exception e, Throwable rootCause, HttpServletRequest req) {
+        if (e instanceof DataIntegrityViolationException) {
+            String path = req.getRequestURI();
+            if (path.endsWith("meals/")) return "Meal with the same date has been saved already";
+            return "User with this email already exists";
+        }
+        return rootCause.toString();
     }
 }

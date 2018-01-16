@@ -48,6 +48,6 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, ValidationUtil.getErrorMessage(e, rootCause));
+        return new ErrorInfo(req.getRequestURL(), errorType, ValidationUtil.getErrorMessage(e, rootCause, req));
     }
 }

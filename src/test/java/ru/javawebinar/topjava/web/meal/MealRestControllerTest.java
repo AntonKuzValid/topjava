@@ -1,9 +1,15 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -24,6 +30,7 @@ import static ru.javawebinar.topjava.TestUtil.*;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = MealRestController.REST_URL + '/';
@@ -101,11 +108,26 @@ public class MealRestControllerTest extends AbstractControllerTest {
     @Test
     public void testCreateInvalid() throws Exception {
         Meal created = getCreatedInvalid();
-        ResultActions action = mockMvc.perform(post(REST_URL)
+        mockMvc.perform(post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    @Test
+    public void testCreateWithConstraint() throws Exception {
+        Meal created = ADMIN_MEAL1;
+        created.setId(null);
+        MvcResult result = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andReturn();
+        Assert.assertTrue(result.getResponse().getContentAsString().contains("Meal with the same date has been saved already"));
     }
 
     @Test
