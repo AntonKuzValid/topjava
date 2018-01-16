@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -67,5 +68,9 @@ public class ValidationUtil {
                     joiner.add(msg);
                 });
         return joiner.toString();
+    }
+
+    public static String getErrorMessage(Exception e, Throwable rootCause) {
+        return e instanceof DataIntegrityViolationException ? "User with this email already exists" : rootCause.toString();
     }
 }
