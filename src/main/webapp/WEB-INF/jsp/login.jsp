@@ -20,6 +20,17 @@
                 <button type="submit" class="btn btn-success">
                     <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                 </button>
+
+                <span class="btn-group dropdown show">
+                    <a class=" dropdown-toggle" href="#" data-toggle="dropdown">
+                        ${param.languageVar!=null?param.languageVar:'lang'}
+                        <b class="caret"></b>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="login?languageVar=ru">Русский</a>
+                        <a class="dropdown-item" href="login?languageVar=en">English</a>
+                    </div>
+                </span>
             </form:form>
         </div>
     </div>
@@ -88,6 +99,7 @@
     <c:if test="${not empty param.username}">
     setCredentials("${param.username}", "");
     </c:if>
+
     function setCredentials(username, password) {
         $('input[name="username"]').val(username);
         $('input[name="password"]').val(password);
