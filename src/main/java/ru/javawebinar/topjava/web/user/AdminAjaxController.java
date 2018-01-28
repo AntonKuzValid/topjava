@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @RestController
@@ -35,9 +36,9 @@ public class AdminAjaxController extends AbstractUserController {
     }
 
     @PostMapping
-    public void createOrUpdate(@Valid UserTo userTo, BindingResult result) {
+    public void createOrUpdate(@Valid UserTo userTo, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         if (userTo.isNew()) {
             super.create(UserUtil.createNewFromTo(userTo));

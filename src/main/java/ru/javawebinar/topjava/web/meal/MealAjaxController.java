@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
@@ -9,6 +11,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -36,9 +39,11 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public void createOrUpdate(@Valid Meal meal, BindingResult result) {
+    public void createOrUpdate(@Valid Meal meal, BindingResult result) throws NoSuchMethodException, MethodArgumentNotValidException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new MethodArgumentNotValidException(
+                    new MethodParameter(this.getClass().getDeclaredMethod("createMeal", Meal.class), 0),
+                    result);
         }
         if (meal.isNew()) {
             super.create(meal);

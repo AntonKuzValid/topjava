@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,17 +43,17 @@ public class MealRestController extends AbstractMealController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody Meal meal, @PathVariable("id") int id, BindingResult result) {
+    public void update(@Valid @RequestBody Meal meal, @PathVariable("id") int id, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         super.update(meal, id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, BindingResult result) {
+    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         Meal created = super.create(meal);
 

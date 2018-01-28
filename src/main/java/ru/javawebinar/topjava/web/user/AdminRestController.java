@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.net.URI;
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) {
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         User created = super.create(user);
 
@@ -56,9 +57,9 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody User user, @PathVariable("id") int id, BindingResult result) {
+    public void update(@Valid @RequestBody User user, @PathVariable("id") int id, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         super.update(user, id);
     }

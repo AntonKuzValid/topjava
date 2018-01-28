@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 
 @RestController
 @RequestMapping(ProfileRestController.REST_URL)
@@ -29,9 +30,9 @@ public class ProfileRestController extends AbstractUserController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) {
+    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) throws ValidationException {
         if (result.hasErrors()) {
-            throw new NotFoundException(ValidationUtil.getErrorResponse(result));
+            throw new ValidationException(ValidationUtil.getErrorResponse(result));
         }
         super.update(userTo, AuthorizedUser.id());
     }
